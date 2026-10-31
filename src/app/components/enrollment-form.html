@@ -1,0 +1,131 @@
+<section id="inscripcion" class="scroll-mt-20 bg-white py-16 sm:py-24">
+  <div class="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 lg:grid-cols-2 lg:items-center lg:gap-16">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-wider text-brand-700">Inscripción</p>
+      <h2 class="mt-3 text-3xl font-extrabold leading-tight text-ink-900 sm:text-4xl">
+        Reserva tu lugar en el curso
+      </h2>
+      <p class="mt-4 text-lg text-ink-700">
+        Completa el formulario y elige la modalidad y el horario que mejor se adapten a ti.
+      </p>
+      <img
+        src="https://images.pexels.com/photos/5649522/pexels-photo-5649522.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+        alt="Adultos tomando notas durante una sesión de inglés"
+        class="mt-8 hidden aspect-[5/4] w-full rounded-3xl object-cover shadow-xl lg:block"
+        width="940"
+        height="650"
+        loading="lazy"
+      />
+    </div>
+
+    <div class="rounded-3xl border border-ink-200 bg-ink-50 p-6 shadow-sm sm:p-8">
+      @if (status() === 'success') {
+        <div role="status" class="py-6 text-center">
+          <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-700 text-white">
+            <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+          </span>
+          <h3 class="mt-6 text-2xl font-extrabold text-ink-900">¡Inscripción recibida!</h3>
+          <p class="mt-3 text-ink-700">Gracias por confiar en nosotros. Tu lugar quedó registrado.</p>
+          <button type="button" class="btn-outline mt-8 w-full" (click)="startNewEnrollment()">
+            Hacer otra inscripción
+          </button>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="space-y-6">
+          <div>
+            <label for="fullName" class="mb-2 block text-sm font-semibold text-ink-700">Nombre completo</label>
+            <input
+              id="fullName"
+              type="text"
+              formControlName="fullName"
+              autocomplete="name"
+              placeholder="Ana García"
+              class="field"
+              [attr.aria-invalid]="hasError('fullName') ? 'true' : null"
+            />
+            @if (hasError('fullName')) {
+              <p class="mt-2 text-sm text-rose-700">Escribe tu nombre completo.</p>
+            }
+          </div>
+
+          <div>
+            <label for="email" class="mb-2 block text-sm font-semibold text-ink-700">Correo electrónico</label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+              inputmode="email"
+              placeholder="tu@correo.com"
+              class="field"
+              [attr.aria-invalid]="hasError('email') ? 'true' : null"
+            />
+            @if (hasError('email')) {
+              <p class="mt-2 text-sm text-rose-700">Escribe un correo válido.</p>
+            }
+          </div>
+
+          <div>
+            <label for="phone" class="mb-2 block text-sm font-semibold text-ink-700">Teléfono</label>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              autocomplete="tel"
+              inputmode="tel"
+              placeholder="555 123 4567"
+              class="field"
+              [attr.aria-invalid]="hasError('phone') ? 'true' : null"
+            />
+            @if (hasError('phone')) {
+              <p class="mt-2 text-sm text-rose-700">Escribe un número de teléfono válido.</p>
+            }
+          </div>
+
+          <fieldset>
+            <legend class="mb-3 text-sm font-semibold text-ink-700">¿Cómo quieres estudiar?</legend>
+            <div class="grid grid-cols-2 gap-3">
+              @for (option of modalityOptions; track option.value) {
+                <label class="cursor-pointer rounded-2xl border-2 border-ink-200 bg-white p-4 transition hover:border-brand-300 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand-200">
+                  <input type="radio" formControlName="modality" [value]="option.value" class="sr-only" />
+                  <span class="block font-semibold text-ink-900">{{ option.label }}</span>
+                  <span class="mt-1 block text-sm text-ink-500">{{ option.hint }}</span>
+                </label>
+              }
+            </div>
+            @if (hasError('modality')) {
+              <p class="mt-2 text-sm text-rose-700">Elige una modalidad.</p>
+            }
+          </fieldset>
+
+          <fieldset>
+            <legend class="mb-3 text-sm font-semibold text-ink-700">Horario preferido</legend>
+            <div class="grid grid-cols-2 gap-3">
+              @for (option of scheduleOptions; track option.value) {
+                <label class="cursor-pointer rounded-full border-2 border-ink-200 bg-white px-4 py-3 text-center text-sm font-semibold text-ink-900 transition hover:border-brand-300 has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50 has-[:focus-visible]:ring-4 has-[:focus-visible]:ring-brand-200">
+                  <input type="radio" formControlName="preferredSchedule" [value]="option.value" class="sr-only" />
+                  {{ option.label }}
+                </label>
+              }
+            </div>
+            @if (hasError('preferredSchedule')) {
+              <p class="mt-2 text-sm text-rose-700">Elige un horario.</p>
+            }
+          </fieldset>
+
+          @if (status() === 'error') {
+            <p role="alert" class="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              No pudimos enviar tu inscripción. Revisa tu conexión e inténtalo de nuevo.
+            </p>
+          }
+
+          <button type="submit" class="btn-primary w-full" [disabled]="status() === 'submitting'">
+            {{ status() === 'submitting' ? 'Enviando...' : 'Quiero inscribirme' }}
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</section>
